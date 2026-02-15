@@ -1,226 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HapaCoin Public Dashboard Ultimate 🚀</title>
+  <title>HapaCoin Dashboard Large Scale 🚀</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
-    body {
-      margin: 0;
-      background: radial-gradient(circle at top, #0d1117, #05070a);
-      font-family: Arial, sans-serif;
-      color: white;
-    }
-
-    .header {
-      padding: 18px;
-      text-align: center;
-      background: #161b22;
-      font-size: 22px;
-      font-weight: bold;
-      border-bottom: 1px solid #30363d;
-      box-shadow: 0 0 15px rgba(88,166,255,0.2);
-    }
-
-    .status {
-      text-align: center;
-      margin: 10px 0 5px 0;
-      font-size: 14px;
-    }
-
-    .online { color: #3fb950; }
-    .offline { color: #f85149; }
-
-    .mining {
-      text-align: center;
-      margin-bottom: 12px;
-      color: #58a6ff;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      50% { opacity: 0.4; }
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-      padding: 10px;
-    }
-
-    .card {
-      background: #161b22;
-      padding: 20px;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 320px;
-      text-align: center;
-      border: 1px solid #30363d;
-      box-shadow: 0 0 20px rgba(88,166,255,0.15);
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      box-shadow: 0 0 30px rgba(88,166,255,0.35);
-      transform: translateY(-3px);
-    }
-
-    .value {
-      font-size: 24px;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #58a6ff;
-    }
-
-    canvas {
-      background: #161b22;
-      border-radius: 12px;
-      margin-top: 15px;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      color: #8b949e;
-      font-size: 12px;
-      padding-bottom: 20px;
-    }
-
-    @media (max-width: 600px) {
-      .card {
-        width: 100%;
-      }
-      .value {
-        font-size: 22px;
-      }
-    }
+    body { margin:0; font-family:Arial,sans-serif; background:radial-gradient(circle at top,#0d1117,#05070a); color:white;}
+    .header{ text-align:center; padding:18px; font-size:22px; font-weight:bold; background:#161b22; border-bottom:1px solid #30363d; }
+    .status{ text-align:center; margin:10px 0 5px 0; font-size:14px;}
+    .online{ color:#3fb950; } .offline{ color:#f85149; }
+    .container{ display:flex; flex-direction:column; align-items:center; gap:15px; padding:10px;}
+    .card{ background:#161b22; padding:20px; border-radius:16px; width:90%; max-width:350px; text-align:center; border:1px solid #30363d; box-shadow:0 0 20px rgba(88,166,255,0.15); transition:0.3s;}
+    .value{ font-size:22px; margin-top:10px; font-weight:bold; color:#58a6ff;}
+    canvas{ background:#161b22; border-radius:12px; margin-top:15px; max-height:200px;}
+    .log{ background:#161b22; width:90%; max-width:350px; margin-top:10px; border:1px solid #30363d; border-radius:12px; padding:10px; font-size:12px; color:#58a6ff; max-height:150px; overflow-y:auto;}
+    .footer{ text-align:center; margin-top:20px; color:#8b949e; font-size:12px; padding-bottom:20px;}
+    @media(max-width:600px){ .card{width:100%;} .value{font-size:20px;} canvas{max-height:150px;} }
   </style>
 </head>
-
 <body>
-  <div class="header">
-    🚀 HapaCoin Public Dashboard Ultimate
-  </div>
+  <div class="header">🚀 HapaCoin Dashboard Large Scale</div>
 
   <div class="status">
     <div id="networkStatus"></div>
     <div>⏱ Last Update: <span id="time"></span></div>
   </div>
 
-  <div class="mining">
-    ⛏ Mining Activity Running...
-  </div>
-
   <div class="container">
     <div class="card">
       🧱 Last Block
-      <div class="value" id="block">Loading...</div>
+      <div class="value" id="block">#1025</div>
     </div>
 
     <div class="card">
       💰 Total Reward
-      <div class="value" id="reward">Loading...</div>
-      <canvas id="rewardChart" width="300" height="150"></canvas>
+      <div class="value" id="reward">300 USD</div>
+      <canvas id="rewardChart"></canvas>
     </div>
 
     <div class="card">
-      📱 Active Devices
-      <div class="value" id="devices">Loading...</div>
+      📱 Total Wallets
+      <div class="value" id="totalWallets">1,000,000</div>
     </div>
   </div>
 
-  <div class="footer">
-    Read-only public dashboard • JSON-powered • GitHub Pages Hosted • Ready for Custom Domain
-  </div>
+  <div class="log" id="blockLog"></div>
+
+  <div class="footer">Read-only dashboard • Simulated 1M wallets • GitHub Pages Hosted • Mobile Friendly</div>
 
   <script>
-    // Jam update realtime
-    function updateTime() {
-      const now = new Date();
-      document.getElementById("time").innerText = now.toLocaleString();
-    }
+    function updateTime(){ document.getElementById("time").innerText = new Date().toLocaleString(); }
+    updateTime(); setInterval(updateTime,1000);
 
-    updateTime();
-    setInterval(updateTime, 1000);
+    const blockEl=document.getElementById("block");
+    const rewardEl=document.getElementById("reward");
+    const totalWalletsEl=document.getElementById("totalWallets");
+    const networkStatusEl=document.getElementById("networkStatus");
+    const logEl=document.getElementById("blockLog");
 
-    // Data chart reward
-    let rewardData = [];
-    let rewardLabels = [];
-    const ctx = document.getElementById('rewardChart').getContext('2d');
-    const rewardChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: rewardLabels,
-        datasets: [{
-          label: 'Total Reward USD',
-          data: rewardData,
-          backgroundColor: 'rgba(88,166,255,0.2)',
-          borderColor: '#58a6ff',
-          borderWidth: 2,
-          fill: true,
-          tension: 0.4,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: { display: false },
-          y: { beginAtZero: true }
-        },
-        plugins: {
-          legend: { display: false }
-        }
-      }
+    networkStatusEl.innerHTML="🟢 Network Status: ONLINE";
+    networkStatusEl.className="online";
+
+    let reward=300, block=1025;
+    let rewardData=[], rewardLabels=[], blockHistory=[];
+
+    // Chart.js
+    const ctx=document.getElementById("rewardChart").getContext("2d");
+    const rewardChart=new Chart(ctx,{
+      type:'line',
+      data:{ labels:rewardLabels, datasets:[{label:'Total Reward USD', data:rewardData, borderColor:'#58a6ff', backgroundColor:'rgba(88,166,255,0.2)', tension:0.4, fill:true}] },
+      options:{ responsive:true, maintainAspectRatio:false, scales:{x:{display:false},y:{beginAtZero:true}}, plugins:{legend:{display:false}} }
     });
 
-    async function loadData() {
-      try {
-        const response = await fetch("data.json");
-        const data = await response.json();
+    function simulateLargeScale(){
+      // Naikkan reward & block acak
+      reward += Math.floor(Math.random()*50+10);
+      if(Math.random()<0.5) block++;
 
-        // Update cards
-        document.getElementById("block").innerText = data.lastBlock;
-        document.getElementById("reward").innerText = data.totalReward;
-        document.getElementById("devices").innerText = data.activeDevices;
+      rewardEl.innerText=reward+" USD";
+      blockEl.innerText="#"+block;
 
-        // Update network status
-        const statusEl = document.getElementById("networkStatus");
-        if(data.status === "ONLINE") {
-          statusEl.innerHTML = "🟢 Network Status: ONLINE";
-          statusEl.className = "online";
-        } else {
-          statusEl.innerHTML = "🔴 Network Status: OFFLINE";
-          statusEl.className = "offline";
-        }
+      // Update chart
+      rewardData.push(reward);
+      rewardLabels.push("#"+block);
+      if(rewardData.length>20){ rewardData.shift(); rewardLabels.shift(); }
+      rewardChart.update();
 
-        // Update chart
-        const rewardNumber = parseFloat(data.totalReward.replace(/[^0-9.-]+/g,""));
-        if(!isNaN(rewardNumber)){
-          rewardData.push(rewardNumber);
-          rewardLabels.push(rewardData.length.toString());
-          if(rewardData.length > 10){ // keep last 10 points
-            rewardData.shift();
-            rewardLabels.shift();
-          }
-          rewardChart.update();
-        }
-
-      } catch(err) {
-        console.error("Error loading JSON:", err);
-      }
+      // Update log
+      blockHistory.push(`#${block} - ${reward} USD - 1,000,000 wallets`);
+      if(blockHistory.length>10) blockHistory.shift();
+      logEl.innerHTML=blockHistory.join("<br>");
     }
 
-    loadData();
-    setInterval(loadData, 10000); // update tiap 10 detik
-
-    // Auto-refresh page tiap 60 detik
-    setTimeout(() => location.reload(), 60000);
+    // Update otomatis tiap 5 detik
+    setInterval(simulateLargeScale,5000);
   </script>
 </body>
 </html>
