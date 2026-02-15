@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HapaCoin Public Dashboard</title>
+  <title>HapaCoin Public Dashboard Ultimate 🚀</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -73,6 +77,12 @@
       color: #58a6ff;
     }
 
+    canvas {
+      background: #161b22;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
     .footer {
       text-align: center;
       margin-top: 40px;
@@ -80,12 +90,21 @@
       font-size: 12px;
       padding-bottom: 20px;
     }
+
+    @media (max-width: 600px) {
+      .card {
+        width: 100%;
+      }
+      .value {
+        font-size: 22px;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div class="header">
-    🚀 HapaCoin Public Dashboard
+    🚀 HapaCoin Public Dashboard Ultimate
   </div>
 
   <div class="status">
@@ -106,6 +125,7 @@
     <div class="card">
       💰 Total Reward
       <div class="value" id="reward">Loading...</div>
+      <canvas id="rewardChart" width="300" height="150"></canvas>
     </div>
 
     <div class="card">
@@ -115,43 +135,91 @@
   </div>
 
   <div class="footer">
-    Read-only public dashboard • JSON-powered • GitHub Pages Hosted
+    Read-only public dashboard • JSON-powered • GitHub Pages Hosted • Ready for Custom Domain
   </div>
 
   <script>
+    // Jam update realtime
     function updateTime() {
       const now = new Date();
       document.getElementById("time").innerText = now.toLocaleString();
     }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // Data chart reward
+    let rewardData = [];
+    let rewardLabels = [];
+    const ctx = document.getElementById('rewardChart').getContext('2d');
+    const rewardChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: rewardLabels,
+        datasets: [{
+          label: 'Total Reward USD',
+          data: rewardData,
+          backgroundColor: 'rgba(88,166,255,0.2)',
+          borderColor: '#58a6ff',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { display: false },
+          y: { beginAtZero: true }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
 
     async function loadData() {
       try {
         const response = await fetch("data.json");
         const data = await response.json();
 
+        // Update cards
         document.getElementById("block").innerText = data.lastBlock;
         document.getElementById("reward").innerText = data.totalReward;
         document.getElementById("devices").innerText = data.activeDevices;
 
+        // Update network status
         const statusEl = document.getElementById("networkStatus");
-        if (data.status === "ONLINE") {
+        if(data.status === "ONLINE") {
           statusEl.innerHTML = "🟢 Network Status: ONLINE";
           statusEl.className = "online";
         } else {
           statusEl.innerHTML = "🔴 Network Status: OFFLINE";
           statusEl.className = "offline";
         }
-      } catch (err) {
+
+        // Update chart
+        const rewardNumber = parseFloat(data.totalReward.replace(/[^0-9.-]+/g,""));
+        if(!isNaN(rewardNumber)){
+          rewardData.push(rewardNumber);
+          rewardLabels.push(rewardData.length.toString());
+          if(rewardData.length > 10){ // keep last 10 points
+            rewardData.shift();
+            rewardLabels.shift();
+          }
+          rewardChart.update();
+        }
+
+      } catch(err) {
         console.error("Error loading JSON:", err);
       }
     }
 
-    updateTime();
-    setInterval(updateTime, 1000);
     loadData();
-    setInterval(loadData, 10000);
+    setInterval(loadData, 10000); // update tiap 10 detik
 
-    // Auto-refresh page setiap 60 detik
+    // Auto-refresh page tiap 60 detik
     setTimeout(() => location.reload(), 60000);
   </script>
 </body>
