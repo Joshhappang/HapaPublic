@@ -26,7 +26,20 @@
       text-align: center;
       margin-top: 10px;
       font-size: 14px;
-      color: #3fb950;
+    }
+
+    .online { color: #3fb950; }
+    .offline { color: #f85149; }
+
+    .mining {
+      text-align: center;
+      margin-top: 8px;
+      color: #58a6ff;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0.4; }
     }
 
     .container {
@@ -55,7 +68,7 @@
     }
 
     .value {
-      font-size: 28px;
+      font-size: 26px;
       margin-top: 12px;
       font-weight: bold;
       color: #58a6ff;
@@ -73,7 +86,7 @@
         width: 100%;
       }
       .value {
-        font-size: 24px;
+        font-size: 22px;
       }
     }
   </style>
@@ -86,30 +99,34 @@
   </div>
 
   <div class="status">
-    🟢 Network Status: ONLINE
+    <span id="networkStatus"></span>
     <br>
     ⏱ Last Update: <span id="time"></span>
+  </div>
+
+  <div class="mining">
+    ⛏ Mining Activity Running...
   </div>
 
   <div class="container">
     <div class="card">
       🧱 Last Block
-      <div class="value" id="block">Belum ada blok</div>
+      <div class="value" id="block">Loading...</div>
     </div>
 
     <div class="card">
       💰 Total Reward
-      <div class="value" id="reward">0 USD</div>
+      <div class="value" id="reward">Loading...</div>
     </div>
 
     <div class="card">
       📱 Active Devices
-      <div class="value" id="devices">0</div>
+      <div class="value" id="devices">Loading...</div>
     </div>
   </div>
 
   <div class="footer">
-    Read-only public dashboard • No private keys • GitHub Pages Hosted
+    Read-only public dashboard • JSON-powered • GitHub Pages Hosted
   </div>
 
   <script>
@@ -119,14 +136,41 @@
         now.toLocaleString();
     }
 
+    async function loadData() {
+      try {
+        const response = await fetch("data.json");
+        const data = await response.json();
+
+        document.getElementById("block").innerText = data.lastBlock;
+        document.getElementById("reward").innerText = data.totalReward;
+        document.getElementById("devices").innerText = data.activeDevices;
+
+        const statusEl = document.getElementById("networkStatus");
+
+        if (data.status === "ONLINE") {
+          statusEl.innerHTML = "🟢 Network Status: ONLINE";
+          statusEl.className = "online";
+        } else {
+          statusEl.innerHTML = "🔴 Network Status: OFFLINE";
+          statusEl.className = "offline";
+        }
+
+      } catch (error) {
+        console.error("Error loading JSON:", error);
+      }
+    }
+
     updateTime();
     setInterval(updateTime, 1000);
 
-    // Auto refresh page every 30 seconds
+    loadData();
+    setInterval(loadData, 10000);
+
     setTimeout(() => {
       location.reload();
-    }, 30000);
+    }, 60000);
   </script>
 
 </body>
-</html>
+  </html>
+  
