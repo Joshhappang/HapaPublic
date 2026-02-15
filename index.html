@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HapaCoin Live 🚀</title>
+  <title>HapaCoin Public Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
     body {
       margin: 0;
@@ -13,18 +12,18 @@
     }
 
     .header {
-      padding: 20px;
+      padding: 18px;
       text-align: center;
       background: #161b22;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
       border-bottom: 1px solid #30363d;
-      box-shadow: 0 0 20px rgba(88,166,255,0.2);
+      box-shadow: 0 0 15px rgba(88,166,255,0.2);
     }
 
     .status {
       text-align: center;
-      margin-top: 10px;
+      margin: 10px 0 5px 0;
       font-size: 14px;
     }
 
@@ -33,7 +32,7 @@
 
     .mining {
       text-align: center;
-      margin-top: 8px;
+      margin-bottom: 12px;
       color: #58a6ff;
       animation: blink 1s infinite;
     }
@@ -44,64 +43,54 @@
 
     .container {
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 40px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
       padding: 10px;
     }
 
     .card {
       background: #161b22;
-      padding: 25px;
+      padding: 20px;
       border-radius: 16px;
-      width: 260px;
+      width: 90%;
+      max-width: 320px;
       text-align: center;
       border: 1px solid #30363d;
-      box-shadow: 0 0 25px rgba(88,166,255,0.15);
+      box-shadow: 0 0 20px rgba(88,166,255,0.15);
       transition: 0.3s;
     }
 
     .card:hover {
-      box-shadow: 0 0 35px rgba(88,166,255,0.4);
-      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(88,166,255,0.35);
+      transform: translateY(-3px);
     }
 
     .value {
-      font-size: 26px;
-      margin-top: 12px;
+      font-size: 24px;
+      margin-top: 10px;
       font-weight: bold;
       color: #58a6ff;
     }
 
     .footer {
       text-align: center;
-      margin-top: 60px;
+      margin-top: 40px;
       color: #8b949e;
-      font-size: 13px;
-    }
-
-    @media (max-width: 600px) {
-      .card {
-        width: 100%;
-      }
-      .value {
-        font-size: 22px;
-      }
+      font-size: 12px;
+      padding-bottom: 20px;
     }
   </style>
 </head>
 
 <body>
-
   <div class="header">
     🚀 HapaCoin Public Dashboard
   </div>
 
   <div class="status">
-    <span id="networkStatus"></span>
-    <br>
-    ⏱ Last Update: <span id="time"></span>
+    <div id="networkStatus"></div>
+    <div>⏱ Last Update: <span id="time"></span></div>
   </div>
 
   <div class="mining">
@@ -132,8 +121,7 @@
   <script>
     function updateTime() {
       const now = new Date();
-      document.getElementById("time").innerText =
-        now.toLocaleString();
+      document.getElementById("time").innerText = now.toLocaleString();
     }
 
     async function loadData() {
@@ -146,7 +134,6 @@
         document.getElementById("devices").innerText = data.activeDevices;
 
         const statusEl = document.getElementById("networkStatus");
-
         if (data.status === "ONLINE") {
           statusEl.innerHTML = "🟢 Network Status: ONLINE";
           statusEl.className = "online";
@@ -154,23 +141,18 @@
           statusEl.innerHTML = "🔴 Network Status: OFFLINE";
           statusEl.className = "offline";
         }
-
-      } catch (error) {
-        console.error("Error loading JSON:", error);
+      } catch (err) {
+        console.error("Error loading JSON:", err);
       }
     }
 
     updateTime();
     setInterval(updateTime, 1000);
-
     loadData();
     setInterval(loadData, 10000);
 
-    setTimeout(() => {
-      location.reload();
-    }, 60000);
+    // Auto-refresh page setiap 60 detik
+    setTimeout(() => location.reload(), 60000);
   </script>
-
 </body>
-  </html>
-  
+</html>
