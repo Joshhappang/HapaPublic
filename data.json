@@ -1,6 +1,11 @@
 {
   "lastBlock": "#1025",
-  "totalReward": "300 USD",
-  "activeDevices": 4,
-  "status": "ONLINE"
+  "totalReward": "5000000 USD",
+  "activeDevices": 10000,
+  "totalWallets": 1000000,
+  "status": "ONLINE",
+  "topWallets": [
+    {"wallet":"0x123...abc","reward":"5000 USD"},
+    {"wallet":"0x456...def","reward":"4800 USD"}
+  ]
 }
