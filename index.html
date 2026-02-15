@@ -1,2 +1,63 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="dashboard.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HapaCoin Dashboard Ultimate 🚀</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:radial-gradient(circle at top,#0d1117,#05070a); color:white;}
+    .header{ text-align:center; padding:18px; font-size:22px; font-weight:bold; background:#161b22; border-bottom:1px solid #30363d; }
+    .status{ text-align:center; margin:10px 0 5px 0; font-size:14px;}
+    .online{ color:#3fb950; } .offline{ color:#f85149; }
+    .container{ display:flex; flex-direction:column; align-items:center; gap:15px; padding:10px;}
+    .card{ background:#161b22; padding:20px; border-radius:16px; width:90%; max-width:350px; text-align:center; border:1px solid #30363d; box-shadow:0 0 20px rgba(88,166,255,0.15); transition:0.3s;}
+    .value{ font-size:22px; margin-top:10px; font-weight:bold; color:#58a6ff;}
+    canvas{ background:#161b22; border-radius:12px; margin-top:15px; max-height:200px;}
+    .log{ background:#161b22; width:90%; max-width:350px; margin-top:10px; border:1px solid #30363d; border-radius:12px; padding:10px; font-size:12px; color:#58a6ff; max-height:150px; overflow-y:auto;}
+    table{ width:90%; max-width:350px; margin-top:10px; border-collapse:collapse; }
+    th, td{ padding:6px; text-align:center; border-bottom:1px solid #30363d; font-size:12px; color:#58a6ff;}
+    .footer{ text-align:center; margin-top:20px; color:#8b949e; font-size:12px; padding-bottom:20px;}
+    @media(max-width:600px){ .card{width:100%;} .value{font-size:20px;} canvas{max-height:150px;} table{font-size:11px;} }
+  </style>
+</head>
+<body>
+  <div class="header">🚀 HapaCoin Dashboard Ultimate</div>
+
+  <div class="status">
+    <div id="networkStatus" class="online">🟢 Network Status: ONLINE</div>
+    <div>⏱ Last Update: <span id="time"></span></div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      🧱 Last Block
+      <div class="value" id="block">#1030</div>
+    </div>
+
+    <div class="card">
+      💰 Total Reward
+      <div class="value" id="reward">5500 USD</div>
+      <canvas id="rewardChart"></canvas>
+    </div>
+
+    <div class="card">
+      📱 Total Wallets
+      <div class="value" id="totalWallets">1,000,000</div>
+    </div>
+
+    <div class="card">
+      🏆 Top 20 Wallets
+      <table id="topWallets">
+        <tr><th>Wallet</th><th>Reward</th></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="log" id="blockLog"></div>
+
+  <div class="footer">Read-only dashboard • Simulated 1M wallets • GitHub Pages Hosted • Mobile Friendly</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
+
